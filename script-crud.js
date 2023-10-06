@@ -32,13 +32,11 @@ const taskIconeSvg = `
 </svg>
 `;
 
-const limparForm = () => {
-  textArea.value = "";
-  formTask.classList.add("hidden");
-};
-
 let tarefaSelecionada = null;
 let itemTarefaSelecionada = null;
+
+let tarefaEmEdicao = null;
+let paragraphEmEdicao = null;
 
 const selecionaTarefa = (tarefa, elemento) => {
   document
@@ -60,6 +58,26 @@ const selecionaTarefa = (tarefa, elemento) => {
   elemento.classList.add("app__section-task-list-item-active");
 };
 
+const limparForm = () => {
+  tarefaEmEdicao = null;
+  paragraphEmEdicao = null;
+  textArea.value = "";
+  formTask.classList.add("hidden");
+};
+
+const selecionaTarefaParaEditar = (tarefa, elemento) => {
+  if (tarefaEmEdicao == tarefa) {
+    limparForm();
+    return;
+  }
+
+  formLabel.textContent = "Editando tarefa";
+  tarefaEmEdicao = tarefa;
+  paragraphEmEdicao = elemento;
+  textArea.value = tarefa.descricao;
+  formTask.classList.remove("hidden");
+};
+
 function createTask(tarefa) {
   const li = document.createElement("li");
   li.classList.add("app__section-task-list-item");
@@ -73,6 +91,16 @@ function createTask(tarefa) {
   paragraph.textContent = tarefa.descricao;
 
   const button = document.createElement("button");
+
+  button.classList.add("app_button-edit");
+  const editIcon = document.createElement("img");
+  editIcon.setAttribute("src", "/imagens/edit.png");
+  button.appendChild(editIcon);
+
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    selecionaTarefaParaEditar(tarefa, paragraph);
+  });
 
   li.onclick = () => {
     selecionaTarefa(tarefa, li);
@@ -91,6 +119,7 @@ function createTask(tarefa) {
 
   li.appendChild(svgIcone);
   li.appendChild(paragraph);
+  li.appendChild(button);
 
   return li;
 }
@@ -111,14 +140,18 @@ const updateLocalStorage = () => {
 
 formTask.addEventListener("submit", (evento) => {
   evento.preventDefault();
-  const task = {
-    descricao: textArea.value,
-    concluida: false,
-  };
-  tarefas.push(task);
-  const taskItem = createTask(task);
-  taskListContainer.appendChild(taskItem);
-
+  if (tarefaEmEdicao) {
+    tarefaEmEdicao.descricao = textArea.value;
+    paragraphEmEdicao.textContent = textArea.value;
+  } else {
+    const task = {
+      descricao: textArea.value,
+      concluida: false,
+    };
+    tarefas.push(task);
+    const taskItem = createTask(task);
+    taskListContainer.appendChild(taskItem);
+  }
   updateLocalStorage();
   limparForm();
 });
