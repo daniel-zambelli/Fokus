@@ -12,6 +12,9 @@ const toggleFormDeleteBtn = document.querySelector(
   ".app__form-footer__button--delete"
 );
 
+const btnDeletarConcluidas = document.querySelector("#btn-remover-concluidas");
+const btnDeletarTodas = document.querySelector("#btn-remover-todas");
+
 const taskAtiveDescription = document.querySelector(
   ".app__section-active-task-description"
 );
@@ -192,3 +195,18 @@ document.addEventListener("TarefaFinalizada", function (e) {
     updateLocalStorage();
   }
 });
+
+const removerTarefas = (somenteConcluidas) => {
+  const seletor = somenteConcluidas
+    ? ".app__section-task-list-item-complete"
+    : ".app__section-task-list-item";
+  document.querySelectorAll(seletor).forEach((element) => {
+    element.remove();
+  });
+
+  tarefas = somenteConcluidas ? tarefas.filter((t) => !t.concluida) : [];
+  updateLocalStorage();
+};
+
+btnDeletarConcluidas.addEventListener("click", () => removerTarefas(true));
+btnDeletarTodas.addEventListener("click", () => removerTarefas(false));
