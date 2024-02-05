@@ -98,8 +98,8 @@ function createTask(tarefa) {
   paragraph.textContent = tarefa.descricao;
 
   const button = document.createElement("button");
-
   button.classList.add("app_button-edit");
+
   const editIcon = document.createElement("img");
   editIcon.setAttribute("src", "/imagens/edit.png");
   button.appendChild(editIcon);
