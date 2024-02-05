@@ -94,7 +94,6 @@ function createTask(tarefa) {
 
   const paragraph = document.createElement("p");
   paragraph.classList.add("app__section-task-list-item-description");
-
   paragraph.textContent = tarefa.descricao;
 
   const button = document.createElement("button");
